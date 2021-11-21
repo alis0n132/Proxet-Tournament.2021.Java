@@ -17,6 +17,7 @@ public class TeamGenerator {
 
     private static final int INITIAL_CAPACITY = 300000;
     private static final int PLAYERS_PER_TEAM = 9;
+    private static final int NUMBER_OF_VEHICLE_TYPES = 3;
 
     public TeamGeneratorResult generateTeams(String filePath) {
         PriorityQueue<WaitingPlayer> playersOnFirstVehicle = new PriorityQueue<>(INITIAL_CAPACITY);
@@ -31,7 +32,7 @@ public class TeamGenerator {
         ArrayList<Player> firstTeam = new ArrayList<>();
         ArrayList<Player> secondTeam = new ArrayList<>();
 
-        for (int i = 0; i < PLAYERS_PER_TEAM / 3; i++) {
+        for (int i = 0; i < PLAYERS_PER_TEAM / NUMBER_OF_VEHICLE_TYPES; i++) {
             fillWithTop3Waiters(playersOnFirstVehicle, playersOnSecondVehicle, playersOnThirdVehicle, firstTeam);
             fillWithTop3Waiters(playersOnFirstVehicle, playersOnSecondVehicle, playersOnThirdVehicle, secondTeam);
         }
