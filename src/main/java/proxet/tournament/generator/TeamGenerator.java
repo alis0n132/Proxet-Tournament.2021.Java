@@ -3,8 +3,13 @@ package proxet.tournament.generator;
 import proxet.tournament.generator.dto.Player;
 import proxet.tournament.generator.dto.TeamGeneratorResult;
 
-import java.io.File;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.PriorityQueue;
 
 import static java.lang.Integer.parseInt;
 
@@ -14,17 +19,15 @@ public class TeamGenerator {
     private static final int PLAYERS_PER_TEAM = 9;
 
     public TeamGeneratorResult generateTeams(String filePath) {
-
         PriorityQueue<WaitingPlayer> playersOnFirstVehicle = new PriorityQueue<>(INITIAL_CAPACITY);
         PriorityQueue<WaitingPlayer> playersOnSecondVehicle = new PriorityQueue<>(INITIAL_CAPACITY);
         PriorityQueue<WaitingPlayer> playersOnThirdVehicle = new PriorityQueue<>(INITIAL_CAPACITY);
 
-        try (Scanner scanner = new Scanner(new File(filePath))) {
-            parseWaitingPlayers(playersOnFirstVehicle, playersOnSecondVehicle, playersOnThirdVehicle, scanner);
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            parseWaitingPlayers(playersOnFirstVehicle, playersOnSecondVehicle, playersOnThirdVehicle, reader);
         } catch (Exception e) {
             return new TeamGeneratorResult(Collections.emptyList(), Collections.emptyList());
         }
-
         ArrayList<Player> firstTeam = new ArrayList<>();
         ArrayList<Player> secondTeam = new ArrayList<>();
 
@@ -39,9 +42,10 @@ public class TeamGenerator {
     private void parseWaitingPlayers(PriorityQueue<WaitingPlayer> vehicle1Players,
                                      PriorityQueue<WaitingPlayer> vehicle2Players,
                                      PriorityQueue<WaitingPlayer> vehicle3Players,
-                                     Scanner scanner) {
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
+                                     BufferedReader reader) throws IOException {
+        while (true) {
+            String line = reader.readLine();
+            if (line == null) return;
             String[] strPlayer = line.split("\\s+");
             WaitingPlayer player = new WaitingPlayer(strPlayer[0], parseInt(strPlayer[2]), parseInt(strPlayer[1]));
 
