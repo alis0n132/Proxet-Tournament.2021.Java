@@ -14,11 +14,10 @@ public class TeamGenerator {
     private static final int PLAYERS_PER_TEAM = 9;
 
     public TeamGeneratorResult generateTeams(String filePath) {
-        Comparator<WaitingPlayer> descComparator = (player1, player2) -> player2.waitingTime - player1.waitingTime;
 
-        PriorityQueue<WaitingPlayer> playersOnFirstVehicle = new PriorityQueue<>(INITIAL_CAPACITY, descComparator);
-        PriorityQueue<WaitingPlayer> playersOnSecondVehicle = new PriorityQueue<>(INITIAL_CAPACITY, descComparator);
-        PriorityQueue<WaitingPlayer> playersOnThirdVehicle = new PriorityQueue<>(INITIAL_CAPACITY, descComparator);
+        PriorityQueue<WaitingPlayer> playersOnFirstVehicle = new PriorityQueue<>(INITIAL_CAPACITY);
+        PriorityQueue<WaitingPlayer> playersOnSecondVehicle = new PriorityQueue<>(INITIAL_CAPACITY);
+        PriorityQueue<WaitingPlayer> playersOnThirdVehicle = new PriorityQueue<>(INITIAL_CAPACITY);
 
         try (Scanner scanner = new Scanner(new File(filePath))) {
             parseWaitingPlayers(playersOnFirstVehicle, playersOnSecondVehicle, playersOnThirdVehicle, scanner);
@@ -69,7 +68,7 @@ public class TeamGenerator {
         team.add(new Player(Objects.requireNonNull(vehicle3Player).nickname, vehicle3Player.vehicleType));
     }
 
-    private static class WaitingPlayer {
+    private static class WaitingPlayer implements Comparable<WaitingPlayer> {
         private final String nickname;
         private final int vehicleType;
         private final int waitingTime;
@@ -78,6 +77,11 @@ public class TeamGenerator {
             this.nickname = nickname;
             this.vehicleType = vehicleType;
             this.waitingTime = waitingTime;
+        }
+
+        @Override
+        public int compareTo(WaitingPlayer o) {
+            return o.waitingTime - this.waitingTime; //desc order
         }
     }
 }
